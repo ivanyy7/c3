@@ -399,8 +399,9 @@
                 if (isNaN(result) || !isFinite(result)) {
                     currentInput = 'Ошибка';
                 } else {
+                    const expr = currentInput;
                     currentInput = result.toString();
-                    addToJournal(currentInput, result.toString());
+                    addToJournal(expr, result.toString());
                 }
                 
                 updateDisplay();
