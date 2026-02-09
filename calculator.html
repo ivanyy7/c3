@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор</title>
     <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --calc-bg: #ffffff;
+            --calc-shadow: rgba(0, 0, 0, 0.3);
+            --display-bg: #1a1a1a;
+            --display-color: #ffffff;
+            --btn-bg: #f0f0f0;
+            --btn-color: #333;
+            --btn-hover-bg: #e0e0e0;
+            --btn-hover-shadow: rgba(0, 0, 0, 0.2);
+            --operator-bg: #667eea;
+            --operator-hover: #5568d3;
+            --equals-bg: #764ba2;
+            --equals-hover: #653a8a;
+            --clear-bg: #ff6b6b;
+            --clear-hover: #ee5a5a;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --calc-bg: #0f3460;
+            --calc-shadow: rgba(0, 0, 0, 0.5);
+            --display-bg: #0a0a0f;
+            --display-color: #e8e8e8;
+            --btn-bg: #1a4a6e;
+            --btn-color: #e8e8e8;
+            --btn-hover-bg: #256a94;
+            --btn-hover-shadow: rgba(0, 0, 0, 0.4);
+            --operator-bg: #533483;
+            --operator-hover: #6b44a8;
+            --equals-bg: #7c3aed;
+            --equals-hover: #8b5cf6;
+            --clear-bg: #c0392b;
+            --clear-hover: #e74c3c;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,22 +55,48 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             padding: 20px;
+            transition: background 0.3s ease;
         }
 
         .calculator {
-            background: #ffffff;
+            background: var(--calc-bg);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px var(--calc-shadow);
             padding: 30px;
             max-width: 400px;
             width: 100%;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--btn-hover-bg);
+            transform: scale(1.05);
         }
 
         .display {
-            background: #1a1a1a;
-            color: #ffffff;
+            background: var(--display-bg);
+            color: var(--display-color);
             font-size: 2.5rem;
             padding: 20px;
             text-align: right;
@@ -44,6 +108,7 @@
             justify-content: flex-end;
             word-wrap: break-word;
             overflow-wrap: break-word;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .buttons {
@@ -53,7 +118,7 @@
         }
 
         button {
-            background: #f0f0f0;
+            background: var(--btn-bg);
             border: none;
             border-radius: 10px;
             font-size: 1.5rem;
@@ -61,54 +126,155 @@
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 600;
-            color: #333;
+            color: var(--btn-color);
         }
 
         button:hover {
-            background: #e0e0e0;
+            background: var(--btn-hover-bg);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px var(--btn-hover-shadow);
         }
 
         button:active {
             transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px var(--btn-hover-shadow);
         }
 
         .operator {
-            background: #667eea;
+            background: var(--operator-bg);
             color: #ffffff;
         }
 
         .operator:hover {
-            background: #5568d3;
+            background: var(--operator-hover);
         }
 
         .equals {
-            background: #764ba2;
+            background: var(--equals-bg);
             color: #ffffff;
         }
 
         .equals:hover {
-            background: #653a8a;
+            background: var(--equals-hover);
         }
 
         .clear {
-            background: #ff6b6b;
+            background: var(--clear-bg);
             color: #ffffff;
         }
 
         .clear:hover {
-            background: #ee5a5a;
+            background: var(--clear-hover);
         }
 
         .zero {
             grid-column: span 2;
         }
+
+        .wrapper {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+        .journal {
+            background: var(--calc-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--calc-shadow);
+            padding: 20px;
+            width: 280px;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .journal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--btn-bg);
+        }
+
+        .journal-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--btn-color);
+        }
+
+        .journal-clear {
+            background: transparent;
+            border: none;
+            color: var(--btn-color);
+            font-size: 0.85rem;
+            cursor: pointer;
+            opacity: 0.7;
+            padding: 4px 8px;
+        }
+
+        .journal-clear:hover {
+            opacity: 1;
+            background: var(--btn-hover-bg);
+            transform: none;
+        }
+
+        .journal-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .journal-entry {
+            padding: 10px 12px;
+            background: var(--display-bg);
+            color: var(--display-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .journal-entry:hover {
+            background: var(--btn-hover-bg);
+        }
+
+        .journal-entry .expr {
+            opacity: 0.85;
+        }
+
+        .journal-entry .result {
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .journal-empty {
+            color: var(--btn-color);
+            opacity: 0.6;
+            font-size: 0.9rem;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+    <div class="wrapper">
+    <div class="journal">
+        <div class="journal-header">
+            <span class="journal-title">Журнал операций</span>
+            <button class="journal-clear" onclick="clearJournal()" id="journalClear">Очистить</button>
+        </div>
+        <div class="journal-list" id="journalList">
+            <div class="journal-empty" id="journalEmpty">Пока нет операций</div>
+        </div>
+    </div>
     <div class="calculator">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Переключить тему">☀️</button>
         <div class="display" id="display">0</div>
         <div class="buttons">
             <button class="clear" onclick="clearDisplay()">C</button>
@@ -135,11 +301,41 @@
             <button onclick="appendDecimal()">.</button>
         </div>
     </div>
+    </div>
 
     <script>
         let display = document.getElementById('display');
         let currentInput = '0';
         let shouldResetDisplay = false;
+        let journalEntries = [];
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('calculator-theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('calculator-theme', 'dark');
+            }
+        }
+
+        (function initTheme() {
+            const saved = localStorage.getItem('calculator-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                html.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+        })();
 
         function updateDisplay() {
             display.textContent = currentInput;
@@ -204,6 +400,7 @@
                     currentInput = 'Ошибка';
                 } else {
                     currentInput = result.toString();
+                    addToJournal(currentInput, result.toString());
                 }
                 
                 updateDisplay();
@@ -219,6 +416,50 @@
             currentInput = '0';
             shouldResetDisplay = false;
             updateDisplay();
+        }
+
+        function addToJournal(expression, result) {
+            journalEntries.unshift({ expr: expression, result: result });
+            if (journalEntries.length > 50) journalEntries.pop();
+            renderJournal();
+        }
+
+        function renderJournal() {
+            const list = document.getElementById('journalList');
+            const empty = document.getElementById('journalEmpty');
+            const clearBtn = document.getElementById('journalClear');
+            if (journalEntries.length === 0) {
+                list.innerHTML = '<div class="journal-empty" id="journalEmpty">Пока нет операций</div>';
+                clearBtn.style.visibility = 'hidden';
+                return;
+            }
+            clearBtn.style.visibility = 'visible';
+            list.innerHTML = journalEntries.map((entry, i) =>
+                `<div class="journal-entry" data-index="${i}">
+                    <div class="expr">${escapeHtml(entry.expr)}</div>
+                    <div class="result">= ${escapeHtml(entry.result)}</div>
+                </div>`
+            ).join('');
+            list.querySelectorAll('.journal-entry').forEach(el => {
+                el.addEventListener('click', () => useJournalResult(journalEntries[parseInt(el.dataset.index)].result));
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function useJournalResult(result) {
+            currentInput = result;
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function clearJournal() {
+            journalEntries = [];
+            renderJournal();
         }
 
         function deleteLast() {
